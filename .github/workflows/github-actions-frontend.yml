@@ -39,6 +39,8 @@ jobs:
         run: pnpm test
       - name: Build
         working-directory: ./frontend
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: pnpm run build
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'

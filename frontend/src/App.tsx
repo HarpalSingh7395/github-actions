@@ -1,10 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
 function App() {
   const [count, setCount] = useState(0)
+  const [apiMessage, setApiMessage] = useState<string>('Loading...')
+  const [apiError, setApiError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/hello`)
+      .then((res) => res.json())
+      .then((data) => setApiMessage(data.message))
+      .catch(() => setApiError('Failed to connect to backend'))
+  }, [])
 
   return (
     <>
@@ -17,6 +28,17 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
+
+      <div className="card">
+        <p id="api-message">
+          {apiError ? (
+            <span style={{ color: 'red' }}>{apiError}</span>
+          ) : (
+            <span>API says: <strong>{apiMessage}</strong></span>
+          )}
+        </p>
+      </div>
+
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
