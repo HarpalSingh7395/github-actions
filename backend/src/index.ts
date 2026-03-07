@@ -15,7 +15,7 @@ app.get('/health', (_req: Request, res: Response) => {
     })
 })
 
-// Hello endpoint for github actions comments.
+// Hello endpoint for github actions comment.
 app.get('/api/hello', (_req: Request, res: Response) => {
     res.json({
         message: 'Hello from Github Actions API!',

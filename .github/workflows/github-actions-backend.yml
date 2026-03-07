@@ -79,7 +79,7 @@ jobs:
           echo "✅ Deploy triggered successfully"
 
       - name: Wait for Render to start
-        run: sleep 30
+        run: sleep 180
 
       - name: Health check
         uses: ./.github/actions/check-api-health
