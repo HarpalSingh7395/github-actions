@@ -48,6 +48,14 @@ jobs:
         working-directory: ./backend
         run: pnpm build
 
+      - name: Upload build artifact
+        if: matrix.node-version == 22
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-dist-${{ github.run_number }}
+          path: backend/dist/
+          retention-days: 7
+
   deploy:
     name: Deploy to Render
     runs-on: ubuntu-latest
