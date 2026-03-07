@@ -18,7 +18,7 @@ app.get('/health', (_req: Request, res: Response) => {
 // Hello endpoint
 app.get('/api/hello', (_req: Request, res: Response) => {
     res.json({
-        message: 'Hello from Node.js API!',
+        message: 'Hello from Github Actions API!',
     })
 })
 
