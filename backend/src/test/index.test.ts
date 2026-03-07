@@ -15,7 +15,7 @@ describe('GET /api/hello', () => {
     it('returns hello message', async () => {
         const res = await request(app).get('/api/hello')
         expect(res.status).toBe(200)
-        expect(res.body.message).toBe('Hello from Node.js API!')
+        expect(res.body.message).toBe('Hello from Github Actions API!')
     })
 })
 
