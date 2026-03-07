@@ -1,0 +1,29 @@
+name: Scheduled Health Check
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # every day at midnight UTC
+  workflow_dispatch: # also allow manual trigger
+
+jobs:
+  health-check:
+    name: Nightly API Health Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check backend API
+        uses: ./.github/actions/check-api-health
+        with:
+          api-url: ${{ secrets.RENDER_API_URL }}
+          retries: "3"
+
+      - name: Check frontend is reachable
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://HarpalSingh7395.github.io/github-actions/)
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Frontend returned HTTP $STATUS"
+            exit 1
+          fi
+          echo "✅ Frontend is up (HTTP $STATUS)"
