@@ -1,0 +1,19 @@
+name: "Check API Health"
+description: "Checks that the deployed backend API /health endpoint returns status ok"
+
+inputs:
+  api-url:
+    description: "Base URL of the deployed API (e.g. https://my-api.onrender.com)"
+    required: true
+  retries:
+    description: "Number of times to retry if the check fails"
+    required: false
+    default: "3"
+
+outputs:
+  status:
+    description: "Health check result: ok or failed"
+
+runs:
+  using: "node20"
+  main: "index.js"
