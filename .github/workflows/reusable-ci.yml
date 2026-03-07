@@ -1,0 +1,55 @@
+name: Reusable CI
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "Directory of the project (e.g. ./frontend or ./backend)"
+        required: true
+        type: string
+      node-version:
+        description: "Node.js version to use"
+        required: true
+        type: string
+      lock-file-path:
+        description: "Path to pnpm-lock.yaml relative to repo root"
+        required: true
+        type: string
+    secrets:
+      VITE_API_URL:
+        description: "Backend API URL (frontend only)"
+        required: false
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "latest"
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: "pnpm"
+          cache-dependency-path: ${{ inputs.lock-file-path }}
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.working-directory }}
+        run: pnpm install
+
+      - name: Test
+        working-directory: ${{ inputs.working-directory }}
+        run: pnpm test
+
+      - name: Build
+        working-directory: ${{ inputs.working-directory }}
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        run: pnpm build

@@ -15,10 +15,19 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [20, 22]
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      working-directory: ./backend
+      node-version: ${{ matrix.node-version }}
+      lock-file-path: backend/pnpm-lock.yaml
+
+  upload:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v4
@@ -32,24 +41,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "22"
           cache: "pnpm"
           cache-dependency-path: backend/pnpm-lock.yaml
 
-      - name: Install dependencies
+      - name: Install and Build
         working-directory: ./backend
-        run: pnpm install
-
-      - name: Test
-        working-directory: ./backend
-        run: pnpm test
-
-      - name: Build
-        working-directory: ./backend
-        run: pnpm build
+        run: pnpm install && pnpm build
 
       - name: Upload build artifact
-        if: matrix.node-version == 22
         uses: actions/upload-artifact@v4
         with:
           name: backend-dist-${{ github.run_number }}
